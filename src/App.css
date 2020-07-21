@@ -1,7 +1,43 @@
-.masonry-container {
-  padding: 0;
+h1 {
+  margin-bottom: 2rem!important;
 }
 
-.item img {
-  width: 100%;
+a:hover {
+  color: #ee6218!important;
+  text-decoration: none!important;
+}
+
+header {
+  margin: 1.5rem 0;
+  display: flex!important;
+  align-items: center;
+}
+
+header .logo {
+  height: 60px;
+  width: 60px;
+  margin-right: 1.3rem;
+}
+
+header span {
+  font-weight: bold;
+  font-size: 1.5em;
+}
+
+.masonry-container {
+  display: grid;
+  grid-gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.modal-footer {
+  justify-content: space-between!important;
+}
+
+main {
+  margin-bottom: 3.5rem;
+}
+
+footer {
+  background-color: #ccc;
 }

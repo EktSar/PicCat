@@ -1,21 +1,62 @@
-import React from 'react';
-import "./Photo.css";
-import {NavLink} from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {Modal} from "react-bootstrap";
+import Preloader from "../common/Preloader/Preloader";
 import Username from "../common/Username/Username";
 import {getDate} from "../../functions";
+import "./ModalPhoto.css";
 
-export default ({photoId, url, date, likes, likedByUser, user, likePhoto, unlikePhoto, likingInProgress}) => {
-  //console.log(likedByUser)
+export default ({photo, location, likePhoto, unlikePhoto, likingInProgress, history, getPhoto}) => {
+  const [ready, setReady] = useState(false);
+  const [show, setShow] = useState(true);
+  const [photoId, setPhotoId] = useState(null);
+
+  useEffect(() => {
+    setPhotoId(location.pathname.split('photos/')[1]);
+
+    if (photoId && (!photo || photo.id !== photoId)) {
+      getPhoto(photoId);
+    }
+
+    if (photo && photo.id === photoId) {
+      console.log('f')
+      setReady(true);
+      handleShow();
+    }
+
+  }, [photoId, photo, getPhoto, location])
+
+  const handleClose = () => {
+    setShow(false);
+    history.push('/')
+  }
+  const handleShow = () => setShow(true);
+
+  // console.log(ready)
+
+  if (!ready) {
+    return <Preloader color="success"/>
+  }
+
   return (
-    // <div className="col-md-3 col-sm-3 col-xs-6 item">
-    <div className="photo-card">
-      <div className="photo-header">
-        <span>{getDate(date)}</span>
+    <Modal show={show} onHide={handleClose} size="lg">
+      <Modal.Header closeButton>
+        <Modal.Title>
+          <Username profileImage={photo.user.profile_image.medium} username={photo.user.username}
+                    link={photo.user.links.html}/>
+        </Modal.Title>
+      </Modal.Header>
+
+      <Modal.Body>
+        <img src={photo.urls.regular} alt="Фото" className="modal-photo"/>
+      </Modal.Body>
+
+      <Modal.Footer>
+        <span>{getDate(photo.created_at)}</span>
 
         <div className="likes-wrapper">
-          <span className="likes">{likes}</span>
+          <span className="likes">{photo.likes}</span>
 
-          {likedByUser
+          {photo.liked_by_user
             ? <button className="btn-like" disabled={likingInProgress.some(id => id === photoId)}
                       onClick={() => unlikePhoto(photoId)}>
               <svg width="1.45rem" height="1.45rem" viewBox="0 0 16 16" className="bi bi-suit-heart-fill like-fill"
@@ -36,16 +77,7 @@ export default ({photoId, url, date, likes, likedByUser, user, likePhoto, unlike
             </button>
           }
         </div>
-      </div>
-
-      <NavLink to={`/photos/${photoId}`}>
-        <img src={url} alt="Фото" className="photo"/>
-      </NavLink>
-
-      <div style={{margin: ".8rem"}}>
-        <Username profileImage={user.profile_image.medium} username={user.username} link={user.links.html} />
-      </div>
-    </div>
-    // </div>
-  )
+      </Modal.Footer>
+    </Modal>
+  );
 }

@@ -1,14 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import './App.css';
-import {withRouter, Route, Switch} from "react-router-dom";
+import {Redirect, Route, Switch, withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import {setToken} from "./redux/authReducer";
 import {compose} from "redux";
-import {unsplash} from "./unsplash";
 import {getAuthenticationUrl, setTokenEverywhere} from "./auth";
-import Preloader from "./components/Preloader/Preloader";
-import {getPhotos} from "./redux/photoReducer";
-import Photo from "./components/Photo/Photo";
+import Preloader from "./components/common/Preloader/Preloader";
+import {getPhoto, getPhotos, likePhoto, unlikePhoto} from "./redux/photoReducer";
+import Header from "./components/Header/Header";
+import ModalPhoto from "./components/ModalPhoto/ModalPhoto";
+import Photos from "./components/Photos";
+import {unsplash} from "./unsplash";
+import './App.css';
 
 function App(props) {
   const [ready, setReady] = useState(false);
@@ -29,15 +31,12 @@ function App(props) {
 
   // При загрузке проверка хуком локального хранилища, запись в локальное состояние
   useEffect(() => {
-    console.log(props)
     // Считываем GET-параметр code из URL
     const code = props.location.search.split('code=')[1];
 
     // Если код передан, отправляем запрос на получение токена
     if (code) {
       setTokenEverywhere(code, props.setToken).then(token => {
-        console.log(token);
-
         // Если токен был получен
         if (token) {
           setReady(true);
@@ -50,60 +49,34 @@ function App(props) {
       getAuthentication();
     }
 
-    props.getPhotos();
-
+    props.getPhotos(0);
   }, []); // TODO как сделать зависимости без зацикливания?
 
   if (!ready) {
     return <Preloader/>
   }
 
-  console.log('App')
   return (
     <div className="container">
-      <div>Header</div>
+      <Header/>
+
       <Switch>
-        <Route path="/photos" exact>
-          <h1>Фото</h1>
+        <Route path="/photos/:photoId" exact>
+          <Photos {...props} />
+          <ModalPhoto location={props.location} history={props.history}
+                      likePhoto={props.likePhoto} unlikePhoto={props.unlikePhoto}
+                      likingInProgress={props.photo.likingInProgress}
+                      photo={props.photo.photoById} getPhoto={props.getPhoto}/>
         </Route>
 
-        <Route path="*">
-          <h1>Заголовок</h1>
-
-          {props.photo.isLoading
-            ? <Preloader/>
-            : <div className="masonry-container row">
-              {props.photo.photos.map(photo => (
-                <Photo url={photo.urls.thumb} key={photo.id}/>
-              ))}
-            </div>
-          }
-
-          <div className="masonry-container row">
-            <div className="item">
-              <img src="https://s3.amazonaws.com/clarifai-img/demo/889/88940833.jpg"/>
-            </div>
-            <div className="item">
-              <img src="https://s3.amazonaws.com/clarifai-img/demo/907/90775901.jpg"/>
-            </div>
-            <div className="item">
-              <img src="https://s3.amazonaws.com/clarifai-img/demo/294/29489326.jpg"/>
-            </div>
-            <div className="item ">
-              <img src="https://s3.amazonaws.com/clarifai-img/demo/100/100656385.jpg"/>
-            </div>
-            <div className="item ">
-              <img src="https://s3.amazonaws.com/clarifai-img/demo/889/88940839.jpg"/>
-            </div>
-            <div className="item ">
-              <img src="https://s3.amazonaws.com/clarifai-img/demo/111/111773987.jpg"/>
-            </div>
-            <div className="item ">
-              <img src="https://s3.amazonaws.com/clarifai-img/demo/146/146371016.jpg"/>
-            </div>
-          </div>
+        <Route path="/" exact>
+          <Photos {...props} />
         </Route>
+
+        <Redirect to="/" />
       </Switch>
+
+      {/*<Footer />*/}
     </div>
   );
 }
@@ -115,5 +88,5 @@ const mapStateToProps = state => ({
 
 export default compose(
   withRouter,
-  connect(mapStateToProps, {setToken, getPhotos}))
+  connect(mapStateToProps, {setToken, getPhotos, likePhoto, unlikePhoto, getPhoto}))
 (App);

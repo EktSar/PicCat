@@ -1,0 +1,7 @@
+.modal-photo {
+  height: 60vh;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
