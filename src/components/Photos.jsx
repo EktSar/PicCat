@@ -5,7 +5,6 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 export default (props) => {
   const fetchPhotos = () => {
-    debugger
     props.getPhotos(props.photo.photos.length)
   }
 

@@ -1,13 +1,11 @@
 import React from 'react';
-import "./Photo.css";
 import {NavLink} from "react-router-dom";
 import Username from "../common/Username/Username";
 import {getDate} from "../../functions";
+import "./Photo.css";
 
 export default ({photoId, url, date, likes, likedByUser, user, likePhoto, unlikePhoto, likingInProgress}) => {
-  //console.log(likedByUser)
   return (
-    // <div className="col-md-3 col-sm-3 col-xs-6 item">
     <div className="photo-card">
       <div className="photo-header">
         <span>{getDate(date)}</span>
@@ -46,6 +44,5 @@ export default ({photoId, url, date, likes, likedByUser, user, likePhoto, unlike
         <Username profileImage={user.profile_image.medium} username={user.username} link={user.links.html} />
       </div>
     </div>
-    // </div>
   )
 }

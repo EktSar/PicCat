@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Redirect, Route, Switch, withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import {setToken} from "./redux/authReducer";
@@ -15,28 +15,33 @@ import './App.css';
 function App(props) {
   const [ready, setReady] = useState(false);
 
-  const getAuthentication = () => {
+  const latestProps = useRef(props);
+  useEffect(() => {
+    latestProps.current = props;
+  });
+
+  const getAuthentication = useCallback(() => {
     const data = JSON.parse(localStorage.getItem('userData'));
 
     // Если токен есть в localStorage
     if (data && data.token) {
       unsplash.auth.setBearerToken(data.token);
-      props.setToken(data.token);
+      latestProps.current.setToken(data.token);
       setReady(true);
     } else {
       // Авторизация через unsplash
       getAuthenticationUrl();
     }
-  }
+  }, []);
 
   // При загрузке проверка хуком локального хранилища, запись в локальное состояние
   useEffect(() => {
     // Считываем GET-параметр code из URL
-    const code = props.location.search.split('code=')[1];
+    const code = latestProps.current.location.search.split('code=')[1];
 
     // Если код передан, отправляем запрос на получение токена
     if (code) {
-      setTokenEverywhere(code, props.setToken).then(token => {
+      setTokenEverywhere(code, latestProps.current.setToken).then(token => {
         // Если токен был получен
         if (token) {
           setReady(true);
@@ -49,13 +54,16 @@ function App(props) {
       getAuthentication();
     }
 
-    props.getPhotos(0);
-  }, []); // TODO как сделать зависимости без зацикливания?
+    latestProps.current.getPhotos(0);
+  }, [getAuthentication]); // TODO как сделать зависимости без зацикливания?
 
   if (!ready) {
     return <Preloader/>
   }
 
+  console.log(
+    props.photo.photos
+  )
   return (
     <div className="container">
       <Header/>

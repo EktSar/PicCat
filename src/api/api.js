@@ -1,23 +1,20 @@
 import * as axios from "axios";
 import {unsplash} from "../unsplash";
 
-const clientId = 'eENzyfZ0gldbhV8fUtpQ1es2bwppeIGAn2acq4IAFac';
+//const clientId = 'eENzyfZ0gldbhV8fUtpQ1es2bwppeIGAn2acq4IAFac';
+const clientId = 'b-6eQP7VT2lxVBqAMab-oqO01vE-hTK1jl75oYLZDOg';
 
 // Конкретный экземпляр axios, для настройки работы с одним api
 const instance = axios.create({
-  //withCredentials: true,
   baseURL: "https://api.unsplash.com/",
-  headers: {
-    "Authorization": "Client-ID eENzyfZ0gldbhV8fUtpQ1es2bwppeIGAn2acq4IAFac"
-  }
 });
 
 export const photosAPI = {
   getRandomPhotos(length, count = 10,) {
-    const page = (length * 2) / count;
+    //const page = (length * 2) / count;
 
-    // return instance.get(`/photos/random?client_id=${clientId}&count=${count}`).then(res => {
-    return instance.get(`/photos?client_id=${clientId}&page=${page}&per_page=${count}`).then(res => {
+    return instance.get(`/photos/random?client_id=${clientId}&count=${count}`).then(res => {
+    // return instance.get(`/photos?client_id=${clientId}&page=${page}&per_page=${count}`).then(res => {
       return res.data
     });
   },

@@ -10,15 +10,16 @@ export default ({photo, location, likePhoto, unlikePhoto, likingInProgress, hist
   const [show, setShow] = useState(true);
   const [photoId, setPhotoId] = useState(null);
 
+  console.log(photo)
   useEffect(() => {
     setPhotoId(location.pathname.split('photos/')[1]);
 
     if (photoId && (!photo || photo.id !== photoId)) {
+      console.log('getPhoto')
       getPhoto(photoId);
     }
 
     if (photo && photo.id === photoId) {
-      console.log('f')
       setReady(true);
       handleShow();
     }
@@ -30,8 +31,6 @@ export default ({photo, location, likePhoto, unlikePhoto, likingInProgress, hist
     history.push('/')
   }
   const handleShow = () => setShow(true);
-
-  // console.log(ready)
 
   if (!ready) {
     return <Preloader color="success"/>
