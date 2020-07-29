@@ -43,6 +43,7 @@ const photoReducer = (state = initialState, action) => {
           }
           return photo;
         }),
+        photoById: {...state.photoById, liked_by_user: action.liked_by_user, likes: action.likes}
       }
 
     default:

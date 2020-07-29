@@ -10,12 +10,11 @@ export default ({photo, location, likePhoto, unlikePhoto, likingInProgress, hist
   const [show, setShow] = useState(true);
   const [photoId, setPhotoId] = useState(null);
 
-  console.log(photo)
   useEffect(() => {
     setPhotoId(location.pathname.split('photos/')[1]);
 
+    // Если фотографии еще не установлена
     if (photoId && (!photo || photo.id !== photoId)) {
-      console.log('getPhoto')
       getPhoto(photoId);
     }
 

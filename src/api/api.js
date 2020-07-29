@@ -1,8 +1,7 @@
 import * as axios from "axios";
 import {unsplash} from "../unsplash";
 
-//const clientId = 'eENzyfZ0gldbhV8fUtpQ1es2bwppeIGAn2acq4IAFac';
-const clientId = 'b-6eQP7VT2lxVBqAMab-oqO01vE-hTK1jl75oYLZDOg';
+const clientId = 'eENzyfZ0gldbhV8fUtpQ1es2bwppeIGAn2acq4IAFac';
 
 // Конкретный экземпляр axios, для настройки работы с одним api
 const instance = axios.create({

@@ -55,15 +55,12 @@ function App(props) {
     }
 
     latestProps.current.getPhotos(0);
-  }, [getAuthentication]); // TODO как сделать зависимости без зацикливания?
+  }, [getAuthentication]);
 
   if (!ready) {
     return <Preloader/>
   }
 
-  console.log(
-    props.photo.photos
-  )
   return (
     <div className="container">
       <Header/>
